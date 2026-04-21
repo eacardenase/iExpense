@@ -14,16 +14,14 @@ struct User: Codable {
 
 struct ContentView: View {
     @State private var user: User = {
+        let decoder = JSONDecoder()
+
         guard
-            let userData = UserDefaults.standard.data(forKey: "UserData")
+            let userData = UserDefaults.standard.data(forKey: "UserData"),
+            let user = try? decoder.decode(User.self, from: userData)
         else { return User() }
 
-        let decoder = JSONDecoder()
-        if let user = try? decoder.decode(User.self, from: userData) {
-            return user
-        }
-
-        return User()
+        return user
     }()
 
     var body: some View {
