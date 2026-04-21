@@ -7,33 +7,37 @@
 
 import SwiftUI
 
-struct SecondView: View {
-    let name: String
-    @Environment(\.dismiss) var dismiss
+struct ContentView: View {
+    @State private var numbers = [Int]()
+    @State private var currentNumber = 1
 
     var body: some View {
-        VStack {
-            Text("Hello, @\(name)")
-
-            Button("Dismiss") {
-                dismiss()
+        NavigationStack {
+            List {
+                ForEach(numbers, id: \.self) {
+                    Text("Row \($0)")
+                }
+                .onDelete(perform: removeRows)
             }
-            .buttonStyle(.bordered)
+            .navigationTitle("ToDo")
+            .toolbar {
+                EditButton()
+
+                Button {
+                    withAnimation {
+                        numbers.append(currentNumber)
+                    }
+
+                    currentNumber += 1
+                } label: {
+                    Label("Add", systemImage: "plus")
+                }
+            }
         }
     }
-}
 
-struct ContentView: View {
-    @State private var showingSheet = false
-
-    var body: some View {
-        Button("Show sheet") {
-            showingSheet.toggle()
-        }
-        .buttonStyle(.bordered)
-        .sheet(isPresented: $showingSheet) {
-            SecondView(name: "eacardenase")
-        }
+    func removeRows(at offsets: IndexSet) {
+        numbers.remove(atOffsets: offsets)
     }
 }
 
