@@ -9,7 +9,24 @@ import SwiftUI
 
 @Observable
 class Expenses {
-    var items = [ExpenseItem]()
+    var items = [ExpenseItem]() {
+        didSet {
+            if let encoded = try? JSONEncoder().encode(items) {
+                UserDefaults.standard.set(encoded, forKey: "Items")
+            }
+        }
+    }
+
+    init() {
+        if let itemsData = UserDefaults.standard.data(forKey: "Items"),
+            let loadedItems = try? JSONDecoder().decode(
+                [ExpenseItem].self,
+                from: itemsData
+            )
+        {
+            items = loadedItems
+        }
+    }
 }
 
 struct ContentView: View {
