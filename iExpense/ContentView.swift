@@ -7,7 +7,8 @@
 
 import SwiftUI
 
-struct User: Codable {
+@Observable
+class User: Codable {
     var firstName = ""
     var lastName = ""
 }
