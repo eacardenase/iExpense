@@ -8,7 +8,7 @@
 import SwiftUI
 
 @Observable
-class Expenses: Codable {
+class Expenses {
     var items = [ExpenseItem]()
 }
 
@@ -18,7 +18,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                ForEach(expenses.items, id: \.name) { item in
+                ForEach(expenses.items) { item in
                     Text(item.name)
                 }
                 .onDelete(perform: removeItems)
@@ -27,7 +27,7 @@ struct ContentView: View {
             .toolbar {
                 EditButton()
 
-                Button("Add", systemImage: "plus") {
+                Button("Add Expense", systemImage: "plus") {
                     let item = ExpenseItem(
                         name: "Test",
                         type: "Test",
