@@ -8,46 +8,42 @@
 import SwiftUI
 
 @Observable
-class User: Codable {
-    var firstName = ""
-    var lastName = ""
+class Expenses: Codable {
+    var items = [ExpenseItem]()
 }
 
 struct ContentView: View {
-    @State private var user: User = {
-        let decoder = JSONDecoder()
-
-        guard
-            let userData = UserDefaults.standard.data(forKey: "UserData"),
-            let user = try? decoder.decode(User.self, from: userData)
-        else { return User() }
-
-        return user
-    }()
+    @State private var expenses = Expenses()
 
     var body: some View {
         NavigationStack {
             List {
-                Text("Your name is: \(user.firstName) \(user.lastName)")
-
-                Section {
-                    TextField("First name", text: $user.firstName)
-                    TextField("Last name", text: $user.lastName)
+                ForEach(expenses.items, id: \.name) { item in
+                    Text(item.name)
                 }
+                .onDelete(perform: removeItems)
             }
-            .navigationTitle("Me")
+            .navigationTitle("iExpense")
             .toolbar {
-                Button {
-                    let encoder = JSONEncoder()
+                EditButton()
 
-                    if let data = try? encoder.encode(user) {
-                        UserDefaults.standard.set(data, forKey: "UserData")
+                Button("Add", systemImage: "plus") {
+                    let item = ExpenseItem(
+                        name: "Test",
+                        type: "Test",
+                        amount: 200
+                    )
+
+                    withAnimation {
+                        expenses.items.append(item)
                     }
-                } label: {
-                    Label("Save", systemImage: "square.and.arrow.down")
                 }
             }
         }
+    }
+
+    func removeItems(at offset: IndexSet) {
+        expenses.items.remove(atOffsets: offset)
     }
 }
 
