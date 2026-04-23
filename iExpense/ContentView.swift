@@ -62,10 +62,15 @@ struct ContentView: View {
             }
             .navigationTitle("iExpense")
             .toolbar {
-                EditButton()
+                ToolbarItem(placement: .topBarTrailing) {
+                    EditButton()
+                }
 
-                Button("Add Expense", systemImage: "plus") {
-                    showingAddExpense = true
+                ToolbarItem {
+                    Button("Add Expense", systemImage: "plus", role: .confirm) {
+                        showingAddExpense = true
+                    }
+
                 }
             }
         }
