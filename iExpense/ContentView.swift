@@ -35,10 +35,12 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             List {
-                NavigationLink {
-                    AddExpenseView(expenses: expenses)
-                } label: {
-                    Label("Add expense", systemImage: "plus")
+                Section {
+                    NavigationLink {
+                        AddExpenseView(expenses: expenses)
+                    } label: {
+                        Label("Add expense", systemImage: "plus")
+                    }
                 }
 
                 ForEach(expenses.items) { item in
