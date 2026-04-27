@@ -59,6 +59,7 @@ struct AddExpenseView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden()
     }
 }
 

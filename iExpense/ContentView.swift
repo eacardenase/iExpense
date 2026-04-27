@@ -31,11 +31,16 @@ class Expenses {
 
 struct ContentView: View {
     @State private var expenses = Expenses()
-    @State private var showingAddExpense = false
 
     var body: some View {
         NavigationStack {
             List {
+                NavigationLink {
+                    AddExpenseView(expenses: expenses)
+                } label: {
+                    Label("Add expense", systemImage: "plus")
+                }
+
                 ForEach(expenses.items) { item in
                     HStack {
                         VStack(alignment: .leading, spacing: 8) {
@@ -65,17 +70,7 @@ struct ContentView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     EditButton()
                 }
-
-                ToolbarItem {
-                    Button("Add Expense", systemImage: "plus", role: .confirm) {
-                        showingAddExpense = true
-                    }
-
-                }
             }
-        }
-        .sheet(isPresented: $showingAddExpense) {
-            AddExpenseView(expenses: expenses)
         }
     }
 
