@@ -5,79 +5,44 @@
 //  Created by Edwin Cardenas on 4/20/26.
 //
 
+import SwiftData
 import SwiftUI
 
-@Observable
-class Expenses {
-    var items = [ExpenseItem]() {
-        didSet {
-            if let encoded = try? JSONEncoder().encode(items) {
-                UserDefaults.standard.set(encoded, forKey: "Items")
-            }
-        }
-    }
-
-    init() {
-        if let itemsData = UserDefaults.standard.data(forKey: "Items"),
-            let loadedItems = try? JSONDecoder().decode(
-                [ExpenseItem].self,
-                from: itemsData
-            )
-        {
-            items = loadedItems
-        }
-    }
-}
-
 struct ContentView: View {
-    @State private var expenses = Expenses()
+    @Environment(\.modelContext) var modelContext
+    @State private var path = [Expense]()
+    @State private var sortOrder = [
+        SortDescriptor(\Expense.name),
+        SortDescriptor(\Expense.amount),
+    ]
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    NavigationLink {
-                        AddExpenseView(expenses: expenses)
-                    } label: {
-                        Label("Add expense", systemImage: "plus")
-                    }
+        NavigationStack(path: $path) {
+            ExpensesView()
+                .navigationTitle("iExpense")
+                .navigationDestination(for: Expense.self) { expense in
+                    AddExpenseView(expense: expense)
                 }
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        EditButton()
+                    }
 
-                ForEach(expenses.items) { item in
-                    HStack {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(item.name)
-                                .font(.headline)
-
-                            Text(item.type)
-                                .font(.subheadline)
-                        }
-
-                        Spacer()
-
-                        Text(
-                            item.amount.formatted(
-                                .currency(
-                                    code: Locale.current.currency?.identifier
-                                        ?? "USD"
-                                )
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Add Expense", systemImage: "plus") {
+                            let expense = Expense(
+                                name: "",
+                                type: "Personal",
+                                amount: 0.0
                             )
-                        )
+
+                            modelContext.insert(expense)
+
+                            path = [expense]
+                        }
                     }
                 }
-                .onDelete(perform: removeItems)
-            }
-            .navigationTitle("iExpense")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    EditButton()
-                }
-            }
         }
-    }
-
-    func removeItems(at offset: IndexSet) {
-        expenses.items.remove(atOffsets: offset)
     }
 }
 
