@@ -10,8 +10,8 @@ import SwiftData
 
 @Model
 class Expense {
-    var name: String = "None"
-    var type: String = "Personal"
+    var name: String
+    var type: String
     var amount: Double = 0
 
     var isValidExpense: Bool {

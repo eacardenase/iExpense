@@ -18,7 +18,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationStack(path: $path) {
-            ExpensesView()
+            ExpensesView(sortOrder: sortOrder)
                 .navigationTitle("iExpense")
                 .navigationDestination(for: Expense.self) { expense in
                     AddExpenseView(expense: expense)
@@ -39,6 +39,24 @@ struct ContentView: View {
                             modelContext.insert(expense)
 
                             path = [expense]
+                        }
+                    }
+
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu("More", systemImage: "ellipsis") {
+                            Picker("Sort", selection: $sortOrder) {
+                                Text("Sort by Name")
+                                    .tag([
+                                        SortDescriptor(\Expense.name),
+                                        SortDescriptor(\Expense.amount),
+                                    ])
+
+                                Text("Sort by Amount")
+                                    .tag([
+                                        SortDescriptor(\Expense.amount),
+                                        SortDescriptor(\Expense.name),
+                                    ])
+                            }
                         }
                     }
                 }

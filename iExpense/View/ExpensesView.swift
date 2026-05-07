@@ -12,6 +12,10 @@ struct ExpensesView: View {
     @Environment(\.modelContext) var modelContext
     @Query var expenses: [Expense]
 
+    init(sortOrder: [SortDescriptor<Expense>]) {
+        _expenses = Query(sort: sortOrder)
+    }
+
     var body: some View {
         List {
             ForEach(expenses) { item in
@@ -50,6 +54,6 @@ struct ExpensesView: View {
 }
 
 #Preview {
-    ExpensesView()
+    ExpensesView(sortOrder: [SortDescriptor(\Expense.name)])
         .modelContainer(for: Expense.self)
 }
