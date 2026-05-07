@@ -38,21 +38,19 @@ struct AddExpenseView: View {
         .navigationTitle("Add Expense")
         .navigationBarBackButtonHidden()
         .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(role: .close) {
+                    modelContext.delete(expense)
+
+                    dismiss()
+                }
+            }
+
             ToolbarItem(placement: .confirmationAction) {
                 Button(role: .confirm) {
-                    if !expense.isValidExpense {
-                        modelContext.delete(expense)
-                    }
-
                     dismiss()
                 }
                 .disabled(!expense.isValidExpense)
-            }
-
-            ToolbarItem(placement: .cancellationAction) {
-                Button(role: .close) {
-                    dismiss()
-                }
             }
         }
     }
