@@ -16,7 +16,6 @@ struct AddExpenseView: View {
     @Environment(\.dismiss) var dismiss
 
     var body: some View {
-
         Form {
             TextField("Name", text: $expense.name)
 

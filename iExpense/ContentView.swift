@@ -11,14 +11,17 @@ import SwiftUI
 struct ContentView: View {
     @Environment(\.modelContext) var modelContext
     @State private var path = [Expense]()
+    @State private var filterValue = "All"
     @State private var sortOrder = [
         SortDescriptor(\Expense.name),
         SortDescriptor(\Expense.amount),
     ]
 
+    let expenseTypes = ["All", "Personal", "Business"]
+
     var body: some View {
         NavigationStack(path: $path) {
-            ExpensesView(sortOrder: sortOrder)
+            ExpensesView(filterBy: filterValue, sortOrder: sortOrder)
                 .navigationTitle("iExpense")
                 .navigationDestination(for: Expense.self) { expense in
                     AddExpenseView(expense: expense)
@@ -44,6 +47,12 @@ struct ContentView: View {
 
                     ToolbarItem(placement: .topBarTrailing) {
                         Menu("More", systemImage: "ellipsis") {
+                            Picker("Filter", selection: $filterValue) {
+                                ForEach(expenseTypes, id: \.self) {
+                                    Text($0)
+                                }
+                            }
+
                             Picker("Sort", selection: $sortOrder) {
                                 Text("Sort by Name")
                                     .tag([
